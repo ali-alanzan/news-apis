@@ -6,15 +6,18 @@ import {
   Routes,
 } from "react-router-dom";
 
-import { FrontPage } from './components'
+import { Header, FrontPage, Sidebar, SingleArticle } from './components'
 
 function Application() {
 
   
     return (
       <BrowserRouter>
+      <Header />
+      <Sidebar /> 
       <Routes>
         <Route path={"/"} element={<FrontPage />} />
+        <Route path={"/:slug"} element={<SingleArticle />} />
         
       </Routes>
     </BrowserRouter>
