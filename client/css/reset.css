@@ -48,4 +48,21 @@
   width: 100%;
   text-align: left;
 }
+
+form {
+  display: table;
+  margin: 0 auto;
+  width: 70%;
+  padding: 30px 50px;
+}
+
+form div {
+  width: 60%;
+  margin-bottom: 20px;
+  clear: both;
+}
+
+form div * {
+  width: 100%;
+}
 /*# sourceMappingURL=reset.css.map */

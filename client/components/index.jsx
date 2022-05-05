@@ -8,7 +8,8 @@ const styles = {
   styleFront: {
     width: '30%',
     backgroundColor: colorMain,
-    height: '100vh',
+    height: '100%',
+    minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
     padding: '.5rem 4rem',
@@ -17,7 +18,15 @@ const styles = {
 }
 
 
-export function Header() {
+export function Header({account}) {
+  const acc = account && account.name ? account : false
+  
+  const onChange = (e) => {
+    let v = e.target.value;
+    if(v != '') {
+      window.location.href = window.location.origin+v
+    }    
+  }
   return (
     <div style={{
       width: '100%',
@@ -31,15 +40,21 @@ export function Header() {
 
       <div style={{flexGrow: 1}} className="logo-container">
         <h1>News App 
+        
+          {!acc ? '':<select onChange={onChange}>
+            <option value="">--select--</option>  
+            <option value="/add">Add Post</option>  
+            </select>}
 
-          <a href="#">Action</a>
+          
         </h1>
       </div>
 
 
 
       <div style={{}}>
-        <h1>Username or Login</h1>
+        {!acc ? <Link to="/login">Login</Link>:acc.name}
+        
       </div>
       
 
@@ -169,5 +184,43 @@ export function SingleArticle () {
         </p>
       </div>
     </div>
+  )
+}
+
+const onAddArticle = (e) => {
+  e.preventDefault();
+  console.log('submited');
+}
+
+export function AddArticle ({account}) {
+  if(account.email == undefined) {
+    return <h1>Please Login</h1>
+  }
+  return (
+    <form onSubmit={onAddArticle}>
+      <div>
+        <label>Title</label>
+        <input name="title" required/>
+      </div>
+
+      <div>
+        <label>Text</label>
+        <textarea name="title" cols="30" rows="4" required/>
+      </div>
+
+      <div>
+        <label>Category</label>
+        <select name="category" required>
+          <option value="">--choose--</option>
+          <option value="Health">Health</option>
+          <option value="Technology">Technology</option>
+          <option value="Global">Global</option>
+        </select>
+      </div>
+
+      <div>
+        <input type="submit" value="Add" />
+      </div>
+    </form>
   )
 }
