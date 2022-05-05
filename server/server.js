@@ -8,6 +8,7 @@ import { fetchJSON } from "./utils.js";
 
 import { MongoClient } from "mongodb";
 import { NewsApi } from "./NewsApi.js";
+import { WebSocketServer } from "ws";
 
 dotenv.config();
 
@@ -70,6 +71,47 @@ app.use((req, res, next) => {
   }
 });
 
+
+const wsServer = new WebSocketServer({ noServer: true });
+
+const sockets = [];
+
+wsServer.on("connect", (socket) => {
+  sockets.push(socket);
+
+  setTimeout(async () => {
+    const news = await mongoClient.db("news")
+    .collection("news")
+    .find({})
+    .sort({
+      metacritic: -1,
+    })
+    .map(({  title, slug, text, category, author, date }) => ({
+      title,
+      slug,
+      text,
+      category,
+      author,
+      date,
+    }))
+    .limit(100)
+    .toArray();
+    socket.send(JSON.stringify(news));
+  }, 1000, socket);
+  socket.on("message", (data) => {
+    const news = JSON.parse(data);
+    for (const recipient of sockets) {
+      recipient.send(JSON.stringify(news ));
+    }
+  });
+});
+
+
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Started on http://localhost:${server.address().port}`);
+  server.on("upgrade", (req, socket, head) => {
+    wsServer.handleUpgrade(req, socket, head, (socket) => {
+      wsServer.emit("connect", socket, req);
+    });
+  });
 });

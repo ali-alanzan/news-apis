@@ -48,11 +48,19 @@ export function Header({ account }) {
 
 export function Sidebar() {
   const [articles, setArticles] = useState([]);
+  const [ws, setWs] = useState();
   useEffect(async () => {
-    await fetch("/api/news").then((res) =>
-      res.json().then((data) => setArticles(data))
-    );
+    const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+
+    ws.onmessage = (event) => {
+      console.log(event.data);
+      const articles = JSON.parse(event.data);
+      setArticles((oldState) => [...oldState, ...articles]);
+    };
+    setWs(ws);
   }, []);
+
+  console.log(articles)
   const cats = getCats();
   return (
     <div
@@ -91,9 +99,20 @@ export function Sidebar() {
 
 export function FrontPage() {
   const [articles, setArticles] = useState([]);
+  const [ws, setWs] = useState();
   useEffect(async () => {
-    await fetchJSON("/api/news").then((res) => setArticles(res));
-  }, [articles]);
+    // await fetchJSON("/api/news").then((res) => setArticles(res));
+    const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+
+    ws.onmessage = (event) => {
+      console.log(event.data);
+      const articles = JSON.parse(event.data);
+      setArticles((oldState) => [...oldState, ...articles]);
+    };
+    setWs(ws);
+  }, []);
+
+  console.log(articles)
 
   return (
     <div className="main">
