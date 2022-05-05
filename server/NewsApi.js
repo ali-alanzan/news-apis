@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ObjectId } from "mongodb";
 import slugify from "slugify";
 
 
@@ -7,10 +8,10 @@ export function NewsApi(mongoDatabase) {
 
   router.get('/:slug', async (req, res) => {
     const slug = req.params.slug
-    const news = await mongoDatabase
+    const article = await mongoDatabase
       .collection("news")
       .findOne({slug: slug});
-    res.json(news);
+    res.json(article);
   });
 
   router.get("/", async (req, res) => {
@@ -38,9 +39,16 @@ export function NewsApi(mongoDatabase) {
     res.json(news);
   });
 
-  router.post("/add", (req, res) => {
+  router.post("/add", async (req, res) => {
     const { title, text, category, author } = req.body;
     const slug = slugify(title);
+
+    const article = await mongoDatabase
+      .collection("news")
+      .findOne({slug: slug});
+    if(article != null) {
+        return res.sendStatus(400)
+    }
 
     const result = mongoDatabase.collection("news").insertOne({
       title,
@@ -50,6 +58,37 @@ export function NewsApi(mongoDatabase) {
       author
     });
     res.status(200).send({ok:true});
+  });
+
+  router.post("/save", async (req, res) => {
+    const { title, text, category, account, _id } = req.body;
+    const slug = slugify(title);
+
+    const article = await mongoDatabase
+      .collection("news")
+      .findOne({slug: slug});
+    if(article != null && article._id != _id ) {
+        return res.sendStatus(400)
+    }
+    const ExistingArticle = await mongoDatabase
+      .collection("news")
+      .findOne({_id: ObjectId(_id)});
+    if(account != ExistingArticle.author) {
+        return res.sendStatus(401)
+    }
+
+
+    const result = await mongoDatabase.collection("news").updateOne({ "_id": ExistingArticle._id }, {
+        $set: {
+          "title": title,
+          "slug": slug,
+          "text": text,
+          "category": category
+        }
+      },
+      { returnNewDocument: true }
+    );
+    res.status(200).send({...result, oks:true});
   });
 
   return router;

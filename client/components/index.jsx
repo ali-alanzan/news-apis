@@ -185,7 +185,8 @@ export function AddArticle ({account}) {
       navigate('/myarticles')
 
     } else {
-      setError(`Failed ${res.status} ${res.statusText}`);
+      
+      toast.error(`Failed, ${res.status == 400 ? 'Title is used' : res.statusText}`);
     }
   }
   return (
@@ -233,25 +234,26 @@ export function EditArticle({account}) {
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value })
   }
-  const onAddArticle = async (e) => {
+  const onEditArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/save", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({...values, author: account.email}),
+      body: JSON.stringify({...values, account: account.email}),
     });
     if (res.ok) {
       toast.success('Your article added successfully');
       navigate('/myarticles')
 
     } else {
-      setError(`Failed ${res.status} ${res.statusText}`);
+      toast.error(`Failed, ${res.status == 400 ? 'Title is used' : res.statusText}`);
     }
+
   }
   return (
-    <form onSubmit={onAddArticle}>
+    <form onSubmit={onEditArticle}>
       <div>
         <label>Title</label>
         <input name="title" onChange={onChange} value={values.title} required/>
@@ -273,7 +275,7 @@ export function EditArticle({account}) {
       </div>
 
       <div>
-        <input type="submit" value="Add" />
+        <input type="submit" value="Save" />
       </div>
     </form>
   )
