@@ -63,6 +63,7 @@ export function NewsApi(mongoDatabase) {
       date,
     });
     res.status(200).send({ ok: true });
+
   });
 
   router.post("/save", async (req, res) => {

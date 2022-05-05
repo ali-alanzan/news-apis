@@ -46,22 +46,8 @@ export function Header({ account }) {
   );
 }
 
-export function Sidebar() {
-  const [articles, setArticles] = useState([]);
-  const [ws, setWs] = useState();
-  useEffect(async () => {
-    const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+export function Sidebar({articles, cats}) {
 
-    ws.onmessage = (event) => {
-      console.log(event.data);
-      const articles = JSON.parse(event.data);
-      setArticles((oldState) => [...oldState, ...articles]);
-    };
-    setWs(ws);
-  }, []);
-
-  console.log(articles)
-  const cats = getCats();
   return (
     <div
       style={{
@@ -87,8 +73,8 @@ export function Sidebar() {
 
       <div className="d-f articlessidebar-container">
         {articles.length > 0 &&
-          articles.map((article) => (
-            <a key={`${article._id}`} href={`/edit/${article._id}`}>
+          articles.map((article, index) => (
+            <a key={`${article._id+article.slug+index}`} href={`/view/${article.slug}`}>
               {article.title}
             </a>
           ))}
@@ -97,30 +83,16 @@ export function Sidebar() {
   );
 }
 
-export function FrontPage() {
-  const [articles, setArticles] = useState([]);
-  const [ws, setWs] = useState();
-  useEffect(async () => {
-    // await fetchJSON("/api/news").then((res) => setArticles(res));
-    const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-
-    ws.onmessage = (event) => {
-      console.log(event.data);
-      const articles = JSON.parse(event.data);
-      setArticles((oldState) => [...oldState, ...articles]);
-    };
-    setWs(ws);
-  }, []);
-
-  console.log(articles)
+export function FrontPage({articles}) {
+  
 
   return (
     <div className="main">
       <div className="d-f articlessidebar-container">
         {articles.length > 0 &&
-          articles.map((article) => (
-            <div key={`${article._id}`}>
-              <a href={`/edit/${article._id}`}>{article.title}</a>
+          articles.map((article, index) => (
+            <div key={`${article._id+article.slug+index}`}>
+              <a href={`/view/${article.slug}`}>{article.title}</a>
             </div>
           ))}
       </div>
@@ -165,7 +137,7 @@ export function SingleArticle() {
   );
 }
 
-export function AddArticle({ account }) {
+export function AddArticle({ account, ws }) {
   if (account.email == undefined) {
     return <h1>Please Login</h1>;
   }
@@ -185,6 +157,7 @@ export function AddArticle({ account }) {
       body: JSON.stringify({ ...values, author: account.email }),
     });
     if (res.ok) {
+      ws.send('{"message":"update"}')
       toast.success("Your article added successfully");
       navigate("/myarticles");
     } else {
@@ -347,8 +320,8 @@ export function SingleTopic() {
     <div className="main">
       <h1>({topic}) Articles</h1>
       {articles.length > 0 &&
-        articles.map((article) => (
-          <div key={`${article._id}`}>
+        articles.map((article, index) => (
+          <div key={`${article._id+index}`}>
             <a href={`/view/${article.slug}`}>{article.title}</a>
           </div>
         ))}

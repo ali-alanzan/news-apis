@@ -19,9 +19,12 @@ import {
   SingleTopic,
 } from "./components";
 
-import { fetchJSON, randomString, sha256, useLoader } from "./components/utils";
+import { fetchJSON, randomString, sha256, useLoader, getCats } from "./components/utils";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+
+
 const LoginContext = React.createContext(undefined);
 
 function Login() {
@@ -143,7 +146,8 @@ function LoginCallback() {
 
 function Application() {
   const { data, loading, error } = useLoader(() => fetchJSON("/api/config"));
-
+  const [articles, setArticles] = useState([]);
+  const [ws, setWs] = useState();
   const [account, setAccount] = useState({});
   const dataAccount = async () => {
     const data = await fetchJSON("/api/login");
@@ -151,7 +155,15 @@ function Application() {
   };
   useEffect(() => {
     dataAccount().then((data) => setAccount(data));
-  }, [account]);
+    const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+
+    ws.onmessage = (event) => {
+      // console.log(event.data);
+      const articles = JSON.parse(event.data);
+      setArticles(articles);
+    };
+    setWs(ws);
+  }, []);
   if (loading) {
     return <div>Please wait...</div>;
   }
@@ -167,16 +179,18 @@ function Application() {
 
   const { discovery_endpoint, client_id, scope } = data;
 
+
+  const cats = getCats();
   return (
     <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
       <ToastContainer position="top-center" />
       <BrowserRouter>
         <Header account={account} />
-        <Sidebar />
+        <Sidebar articles={articles} cats={cats} />
 
         <Routes>
-          <Route path={"/"} element={<FrontPage />} />
-          <Route path={"/add"} element={<AddArticle account={account} />} />
+          <Route path={"/"} element={<FrontPage articles={articles} />} />
+          <Route path={"/add"} element={<AddArticle account={account} ws={ws} />} />
           <Route
             path={"/myarticles"}
             element={<MyArticles account={account} />}

@@ -75,12 +75,13 @@ app.use((req, res, next) => {
 const wsServer = new WebSocketServer({ noServer: true });
 
 const sockets = [];
+let news = [];
 
-wsServer.on("connect", (socket) => {
+wsServer.on("connection", (socket) => {
   sockets.push(socket);
-
+  console.log('connectoin socket server')
   setTimeout(async () => {
-    const news = await mongoClient.db("news")
+    news = await mongoClient.db("news")
     .collection("news")
     .find({})
     .sort({
@@ -97,12 +98,31 @@ wsServer.on("connect", (socket) => {
     .limit(100)
     .toArray();
     socket.send(JSON.stringify(news));
-  }, 1000, socket);
+  }, 1000, socket, news);
   socket.on("message", (data) => {
-    const news = JSON.parse(data);
-    for (const recipient of sockets) {
-      recipient.send(JSON.stringify(news ));
-    }
+
+    setTimeout(async () => {
+      news = await mongoClient.db("news")
+      .collection("news")
+      .find({})
+      .sort({
+        metacritic: -1,
+      })
+      .map(({  title, slug, text, category, author, date }) => ({
+        title,
+        slug,
+        text,
+        category,
+        author,
+        date,
+      }))
+      .limit(100)
+      .toArray();
+      for (const recipient of sockets) {
+        recipient.send(JSON.stringify([...news]));
+      }
+    }, 1000, socket, news);
+
   });
 });
 
@@ -111,7 +131,7 @@ const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Started on http://localhost:${server.address().port}`);
   server.on("upgrade", (req, socket, head) => {
     wsServer.handleUpgrade(req, socket, head, (socket) => {
-      wsServer.emit("connect", socket, req);
+      wsServer.emit("connection", socket, req);
     });
   });
 });
