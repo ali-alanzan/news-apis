@@ -20,19 +20,24 @@ export function NewsApi(mongoDatabase) {
         filter.author = req.query.author
     }
 
+    if(req.query.topic!=undefined) {
+        filter.category = req.query.topic
+    }
+
     const news = await mongoDatabase
       .collection("news")
       .find(filter)
       .sort({
         metacritic: -1,
       })
-      .map(({_id, title, slug,text,category,author}) => ({
+      .map(({_id, title, slug,text,category,author, date}) => ({
         _id,
         title,
         slug,
         text,
         category,
-        author
+        author,
+        date
       }))
       .limit(100)
       .toArray();
@@ -49,13 +54,14 @@ export function NewsApi(mongoDatabase) {
     if(article != null) {
         return res.sendStatus(400)
     }
-
+    let date = new Date(Date.now()).toLocaleDateString();
     const result = mongoDatabase.collection("news").insertOne({
       title,
       slug,
       text,
       category,
-      author
+      author,
+      date
     });
     res.status(200).send({ok:true});
   });

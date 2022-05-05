@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import '../css/reset.css';
-import { fetchJSON } from './utils'
+import { fetchJSON, getCats } from './utils'
 import { useParams } from 'react-router-dom';
 
 
@@ -24,7 +24,9 @@ export function Header({account}) {
     }}>
 
       <div style={{flexGrow: 1}} className="logo-container">
-        <h1>News App 
+        <h1>
+
+          <a href="/">News App</a>
         
           {!acc ? '':<><button><a href="/add">Add</a></button><button><a href="/myarticles">My articles</a></button></>}
 
@@ -34,7 +36,7 @@ export function Header({account}) {
 
 
 
-      <div style={{}}>
+      <div>
         {!acc ? <Link to="/login">Login</Link>:acc.name}
         
       </div>
@@ -50,6 +52,7 @@ export function Sidebar() {
   useEffect(async () => {
     await fetch('/api/news').then(res => res.json().then(data => setArticles(data)));      
   }, []);
+  const cats = getCats()
   return (
     <div style={{
       width: '30%',
@@ -66,21 +69,11 @@ export function Sidebar() {
 
       <div className="topics-container">
         <div className="d-f">
-          <a href="#1">
-            Topic(123)
+        {cats.map((cat, index) => (
+          <a href={`/topic/${cat}`} key={index}>
+            {cat}
           </a>
-
-          <a href="#1">
-            Topic(1234)
-          </a>
-
-          <a href="#1">
-            Topic(124)
-          </a>
-
-          <a href="#1">
-            Topic(14)
-          </a>
+        ))}
         </div>
       </div>
 
@@ -88,7 +81,7 @@ export function Sidebar() {
 
       <div className="d-f articlessidebar-container">
       {articles.length>0 && articles.map((article) => (
-          <a  key={`${article._id}`} href={`/edit/${article._id}`}>{article.title}</a>
+          <a key={`${article._id}`} href={`/edit/${article._id}`}>{article.title}</a>
       ))}
       </div>
       
@@ -122,6 +115,13 @@ export function FrontPage() {
 
 
 export function SingleArticle () {
+  const [values, setValues] = useState({title: '', text: '', date: '', category: ''})
+  const { slug } = useParams();
+
+  useEffect(async () => {
+    await fetch(`/api/news/${slug}`).then(res => res.json().then(data => setValues(data)));      
+  }, []);
+  
   return (
     <div style={{
       width: '68%',
@@ -129,36 +129,24 @@ export function SingleArticle () {
       margin: '2% 0 0 2%'
     }}>
       <div className="d-f articlessidebar-container">
-        <h1>Title</h1>
-        <span>Date mm/yy/dd</span>
+        <h1>{values.title}</h1>
+        <span>Date {values.date}</span>
         
-        <div className="topics-container">
-          <div className="d-f">
-            <a href="#1">
-              Topic(123)
-            </a>
-
-            <a href="#1">
-              Topic(1234)
-            </a>
-
-            <a href="#1">
-              Topic(124)
-            </a>
-
-            <a href="#1">
-              Topic(14)
+        <div className="d-f">
+            <a href={`/topic/${values.category}`}>
+            {values.category}
             </a>
           </div>
-        </div>
         
         <p>
-          Article text
+          {values.text}
         </p>
       </div>
     </div>
   )
 }
+
+
 
 
 
@@ -171,6 +159,7 @@ export function AddArticle ({account}) {
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value })
   }
+  const cats = getCats()
   const onAddArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/add", {
@@ -205,9 +194,10 @@ export function AddArticle ({account}) {
         <label>Category</label>
         <select name="category" onChange={onChange} required>
           <option value="">--choose--</option>
-          <option value="Health">Health</option>
-          <option value="Technology">Technology</option>
-          <option value="Global">Global</option>
+          {cats.map((cat, index) => (
+            <option value={cat} key={index}>{cat}</option>
+          ))}
+          
         </select>
       </div>
 
@@ -234,6 +224,7 @@ export function EditArticle({account}) {
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value })
   }
+  const cats = getCats()
   const onEditArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/save", {
@@ -268,9 +259,9 @@ export function EditArticle({account}) {
         <label>Category</label>
         <select name="category" onChange={onChange} value={values.category} required>
           <option value="">--choose--</option>
-          <option value="Health">Health</option>
-          <option value="Technology">Technology</option>
-          <option value="Global">Global</option>
+          {cats.map((cat, index) => (
+            <option value={cat} key={index}>{cat}</option>
+          ))}
         </select>
       </div>
 
@@ -300,6 +291,30 @@ export function MyArticles ({account}) {
           <a href={`/view/${article.slug}`}>{article.title}</a>
           
           <a href={`/edit/${article.slug}`}><button>Edit</button></a>
+        </div>
+      ))}
+    </div>
+  )
+
+}
+
+
+
+export function SingleTopic () {
+  const [articles, setArticles] = useState([]);
+  const { topic } = useParams();
+
+  useEffect(async () => {
+      await fetch('/api/news/?topic='+topic).then(res => res.json()).then(res => setArticles(res));          
+  }, []);
+
+  return (
+    <div className="main">
+      <h1>({topic}) Articles</h1>
+      {articles.length>0 && articles.map((article) => (
+        <div key={`${article._id}`}>
+          <a href={`/view/${article.slug}`}>{article.title}</a>
+          
         </div>
       ))}
     </div>

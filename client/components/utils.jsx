@@ -53,3 +53,12 @@ export async function sha256(string) {
       .replace(/\//g, "_");
   }
   
+
+
+  export function getCats() {
+    return [
+      "Health",
+      "Technology",
+      "Global"
+    ]
+  }

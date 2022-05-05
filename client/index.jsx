@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { Header, FrontPage, Sidebar, SingleArticle, AddArticle, MyArticles, EditArticle } from './components'
+import { Header, FrontPage, Sidebar, SingleArticle, AddArticle, MyArticles, EditArticle, SingleTopic } from './components'
 
 import { fetchJSON, randomString, sha256, useLoader} from './components/utils'
 import {ToastContainer} from 'react-toastify';
@@ -179,7 +179,8 @@ function Application() {
             <Route path={"/edit/:slug"} element={<EditArticle account={account} />} />
             <Route path={"/login"} element={<Login />} />
             <Route path={"/login/callback"} element={<LoginCallback />} />
-            
+            <Route path={"/topic/:topic"} element={<SingleTopic />} />
+
           </Routes>
         </BrowserRouter>
       </LoginContext.Provider>
