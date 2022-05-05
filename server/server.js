@@ -6,12 +6,20 @@ import bodyParser from "body-parser";
 import fetch from "node-fetch";
 import { fetchJSON } from "./utils.js";
 
+import { MongoClient } from "mongodb";
+import { NewsApi } from "./NewsApi.js";
+
 dotenv.config();
 
 
 
 const app = express();
 
+const mongoClient = new MongoClient(process.env.MONGODB_URL);
+mongoClient.connect().then(async () => {
+  console.log("Connected to mongodb");
+  app.use("/api/news", NewsApi(mongoClient.db("news")));
+});
 
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));

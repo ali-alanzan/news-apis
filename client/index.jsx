@@ -8,10 +8,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { Header, FrontPage, Sidebar, SingleArticle, AddArticle } from './components'
+import { Header, FrontPage, Sidebar, SingleArticle, AddArticle, MyArticles, EditArticle } from './components'
 
 import { fetchJSON, randomString, sha256, useLoader} from './components/utils'
-
+import {ToastContainer} from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 const LoginContext = React.createContext(undefined);
 
 function Login() {
@@ -109,7 +110,7 @@ function LoginCallback() {
         body: JSON.stringify({ access_token }),
       });
       if (res.ok) {
-        navigate("/");
+        window.location.replace(window.location.origin)
       } else {
         setError(`Failed ${res.status} ${res.statusText}`);
       }
@@ -165,6 +166,7 @@ function Application() {
 
     return (
       <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
+          <ToastContainer position="top-center" />
           <BrowserRouter>
           <Header account={account} />
           <Sidebar />
@@ -172,7 +174,9 @@ function Application() {
           <Routes>
             <Route path={"/"} element={<FrontPage />} />
             <Route path={"/add"} element={<AddArticle account={account} />} />
-            <Route path={"/article/:slug"} element={<SingleArticle />} />
+            <Route path={"/myarticles"} element={<MyArticles account={account} />} />
+            <Route path={"/view/:slug"} element={<SingleArticle />} />
+            <Route path={"/edit/:slug"} element={<EditArticle account={account} />} />
             <Route path={"/login"} element={<Login />} />
             <Route path={"/login/callback"} element={<LoginCallback />} />
             

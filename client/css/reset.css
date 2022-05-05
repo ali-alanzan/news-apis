@@ -65,4 +65,26 @@ form div {
 form div * {
   width: 100%;
 }
+
+button {
+  padding: 3;
+  margin: 0 10px;
+}
+
+.main {
+  width: 68%;
+  float: left;
+  margin: 2% 0 0 2%;
+}
+
+.main div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  max-width: 50%;
+  clear: both;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  margin: 30px 0;
+}
 /*# sourceMappingURL=reset.css.map */
