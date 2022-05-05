@@ -2,26 +2,25 @@ import { Router } from "express";
 import { ObjectId } from "mongodb";
 import slugify from "slugify";
 
-
 export function NewsApi(mongoDatabase) {
   const router = new Router();
 
-  router.get('/:slug', async (req, res) => {
-    const slug = req.params.slug
+  router.get("/:slug", async (req, res) => {
+    const slug = req.params.slug;
     const article = await mongoDatabase
       .collection("news")
-      .findOne({slug: slug});
+      .findOne({ slug: slug });
     res.json(article);
   });
 
   router.get("/", async (req, res) => {
-    const filter = {}
-    if(req.query.author!=undefined) {
-        filter.author = req.query.author
+    const filter = {};
+    if (req.query.author != undefined) {
+      filter.author = req.query.author;
     }
 
-    if(req.query.topic!=undefined) {
-        filter.category = req.query.topic
+    if (req.query.topic != undefined) {
+      filter.category = req.query.topic;
     }
 
     const news = await mongoDatabase
@@ -30,14 +29,14 @@ export function NewsApi(mongoDatabase) {
       .sort({
         metacritic: -1,
       })
-      .map(({_id, title, slug,text,category,author, date}) => ({
+      .map(({ _id, title, slug, text, category, author, date }) => ({
         _id,
         title,
         slug,
         text,
         category,
         author,
-        date
+        date,
       }))
       .limit(100)
       .toArray();
@@ -50,9 +49,9 @@ export function NewsApi(mongoDatabase) {
 
     const article = await mongoDatabase
       .collection("news")
-      .findOne({slug: slug});
-    if(article != null) {
-        return res.sendStatus(400)
+      .findOne({ slug: slug });
+    if (article != null) {
+      return res.sendStatus(400);
     }
     let date = new Date(Date.now()).toLocaleDateString();
     const result = mongoDatabase.collection("news").insertOne({
@@ -61,9 +60,9 @@ export function NewsApi(mongoDatabase) {
       text,
       category,
       author,
-      date
+      date,
     });
-    res.status(200).send({ok:true});
+    res.status(200).send({ ok: true });
   });
 
   router.post("/save", async (req, res) => {
@@ -72,29 +71,30 @@ export function NewsApi(mongoDatabase) {
 
     const article = await mongoDatabase
       .collection("news")
-      .findOne({slug: slug});
-    if(article != null && article._id != _id ) {
-        return res.sendStatus(400)
+      .findOne({ slug: slug });
+    if (article != null && article._id != _id) {
+      return res.sendStatus(400);
     }
     const ExistingArticle = await mongoDatabase
       .collection("news")
-      .findOne({_id: ObjectId(_id)});
-    if(account != ExistingArticle.author) {
-        return res.sendStatus(401)
+      .findOne({ _id: ObjectId(_id) });
+    if (account != ExistingArticle.author) {
+      return res.sendStatus(401);
     }
 
-
-    const result = await mongoDatabase.collection("news").updateOne({ "_id": ExistingArticle._id }, {
+    const result = await mongoDatabase.collection("news").updateOne(
+      { _id: ExistingArticle._id },
+      {
         $set: {
-          "title": title,
-          "slug": slug,
-          "text": text,
-          "category": category
-        }
+          title: title,
+          slug: slug,
+          text: text,
+          category: category,
+        },
       },
       { returnNewDocument: true }
     );
-    res.status(200).send({...result, oks:true});
+    res.status(200).send({ ...result, oks: true });
   });
 
   return router;

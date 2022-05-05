@@ -21,44 +21,35 @@ export function useLoader(loadingFn) {
 }
 
 export async function fetchJSON(url) {
-    const res = await fetch(url);
-    if (!res.ok) {
-        console.log(`Failed ${res.status}`);
-        throw new Error(`Failed ${res.status}`);
-    }
-    return await res.json();
+  const res = await fetch(url);
+  if (!res.ok) {
+    console.log(`Failed ${res.status}`);
+    throw new Error(`Failed ${res.status}`);
+  }
+  return await res.json();
 }
 
-
-
 export function randomString(length) {
-    const possible =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz1234567890";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-      result += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return result;
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz1234567890";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-
+  return result;
+}
 
 export async function sha256(string) {
-    const binaryHash = await crypto.subtle.digest(
-      "SHA-256",
-      new TextEncoder("utf-8").encode(string)
-    );
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(binaryHash)))
-      .split("=")[0]
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_");
-  }
-  
+  const binaryHash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder("utf-8").encode(string)
+  );
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(binaryHash)))
+    .split("=")[0]
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_");
+}
 
-
-  export function getCats() {
-    return [
-      "Health",
-      "Technology",
-      "Global"
-    ]
-  }
+export function getCats() {
+  return ["Health", "Technology", "Global"];
+}

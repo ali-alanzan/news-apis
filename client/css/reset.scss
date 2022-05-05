@@ -1,80 +1,77 @@
 $white: #e2e2e2;
 $main: #160e42;
 
-*, html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*,
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
 
 .logo-container {
-    h1 {
-     float: left; 
-       
-    }
+  h1 {
+    float: left;
+  }
 }
 
-.d-f{
-    display: flex;
+.d-f {
+  display: flex;
 }
 .topics-container {
-    .d-f {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
-    .d-f a {
-        padding: 20px 20px 0 0;
-        margin: 5px auto;
-        border-radius: 50px;
-        color: $white
-    }
+  .d-f {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  .d-f a {
+    padding: 20px 20px 0 0;
+    margin: 5px auto;
+    border-radius: 50px;
+    color: $white;
+  }
 }
 
-
 .articlessidebar-container {
-    flex-direction: column;
-    margin-top: 40px;
-    padding-left: 20px;
-    a {
-        color: $main;
-        margin: 10px auto;
-        width: 100%;
-        text-align: left;
-    }
+  flex-direction: column;
+  margin-top: 40px;
+  padding-left: 20px;
+  a {
+    color: $main;
+    margin: 10px auto;
+    width: 100%;
+    text-align: left;
+  }
 }
 
 form {
-    display: table;
-    margin: 0 auto;
-    width: 70%;
-    padding: 30px 50px;
-    div {
-        width: 60%;
-        margin-bottom: 20px;
-        clear: both;
-        * {
-            width: 100%;
-        }
-
+  display: table;
+  margin: 0 auto;
+  width: 70%;
+  padding: 30px 50px;
+  div {
+    width: 60%;
+    margin-bottom: 20px;
+    clear: both;
+    * {
+      width: 100%;
     }
-    
+  }
 }
-button{
-    padding: 3;
-    margin: 0 10px;
+button {
+  padding: 3;
+  margin: 0 10px;
 }
 
 .main {
-    width: 68%;
-    float: left;
-    margin: 2% 0 0 2%;
-    div {
-        display: flex;
-        max-width: 50%;
-        clear: both;
-        justify-content: space-around;
-        margin: 30px 0;
-    }
+  width: 68%;
+  float: left;
+  margin: 2% 0 0 2%;
+  div {
+    display: flex;
+    max-width: 50%;
+    clear: both;
+    justify-content: space-around;
+    margin: 30px 0;
+  }
 }

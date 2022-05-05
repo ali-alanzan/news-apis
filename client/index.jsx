@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter,
@@ -8,10 +8,19 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { Header, FrontPage, Sidebar, SingleArticle, AddArticle, MyArticles, EditArticle, SingleTopic } from './components'
+import {
+  Header,
+  FrontPage,
+  Sidebar,
+  SingleArticle,
+  AddArticle,
+  MyArticles,
+  EditArticle,
+  SingleTopic,
+} from "./components";
 
-import { fetchJSON, randomString, sha256, useLoader} from './components/utils'
-import {ToastContainer} from 'react-toastify';
+import { fetchJSON, randomString, sha256, useLoader } from "./components/utils";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const LoginContext = React.createContext(undefined);
 
@@ -34,7 +43,7 @@ function Login() {
       code_challenge: await sha256(code_verifier),
       code_challenge_method: "S256",
       redirect_uri: window.location.origin + "/login/callback",
-      domain_hint: "egms.no", 
+      domain_hint: "egms.no",
     };
 
     window.location.href =
@@ -47,8 +56,6 @@ function Login() {
     </div>
   );
 }
-
-
 
 function LoginCallback() {
   const navigate = useNavigate();
@@ -96,7 +103,7 @@ function LoginCallback() {
           body: JSON.stringify({ access_token }),
         });
         if (res.ok) {
-          window.location.replace(window.location.origin)
+          window.location.replace(window.location.origin);
         } else {
           setError(`Failed ${res.status} ${res.statusText}`);
         }
@@ -110,7 +117,7 @@ function LoginCallback() {
         body: JSON.stringify({ access_token }),
       });
       if (res.ok) {
-        window.location.replace(window.location.origin)
+        window.location.replace(window.location.origin);
       } else {
         setError(`Failed ${res.status} ${res.statusText}`);
       }
@@ -134,21 +141,17 @@ function LoginCallback() {
   return <h1>Please wait...</h1>;
 }
 
-
-
 function Application() {
   const { data, loading, error } = useLoader(() => fetchJSON("/api/config"));
 
-  const [account, setAccount] = useState({})
-  const dataAccount  =  async () => {
-    const data = await fetchJSON("/api/login"); 
+  const [account, setAccount] = useState({});
+  const dataAccount = async () => {
+    const data = await fetchJSON("/api/login");
     return data;
-  }
+  };
   useEffect(() => {
-
-    dataAccount().then(data => setAccount(data));
-    
-  }, [account])
+    dataAccount().then((data) => setAccount(data));
+  }, [account]);
   if (loading) {
     return <div>Please wait...</div>;
   }
@@ -164,29 +167,32 @@ function Application() {
 
   const { discovery_endpoint, client_id, scope } = data;
 
-    return (
-      <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
-          <ToastContainer position="top-center" />
-          <BrowserRouter>
-          <Header account={account} />
-          <Sidebar />
+  return (
+    <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
+      <ToastContainer position="top-center" />
+      <BrowserRouter>
+        <Header account={account} />
+        <Sidebar />
 
-          <Routes>
-            <Route path={"/"} element={<FrontPage />} />
-            <Route path={"/add"} element={<AddArticle account={account} />} />
-            <Route path={"/myarticles"} element={<MyArticles account={account} />} />
-            <Route path={"/view/:slug"} element={<SingleArticle />} />
-            <Route path={"/edit/:slug"} element={<EditArticle account={account} />} />
-            <Route path={"/login"} element={<Login />} />
-            <Route path={"/login/callback"} element={<LoginCallback />} />
-            <Route path={"/topic/:topic"} element={<SingleTopic />} />
+        <Routes>
+          <Route path={"/"} element={<FrontPage />} />
+          <Route path={"/add"} element={<AddArticle account={account} />} />
+          <Route
+            path={"/myarticles"}
+            element={<MyArticles account={account} />}
+          />
+          <Route path={"/view/:slug"} element={<SingleArticle />} />
+          <Route
+            path={"/edit/:slug"}
+            element={<EditArticle account={account} />}
+          />
+          <Route path={"/login"} element={<Login />} />
+          <Route path={"/login/callback"} element={<LoginCallback />} />
+          <Route path={"/topic/:topic"} element={<SingleTopic />} />
+        </Routes>
+      </BrowserRouter>
+    </LoginContext.Provider>
+  );
+}
 
-          </Routes>
-        </BrowserRouter>
-      </LoginContext.Provider>
-
-    );
-  }
-  
-  ReactDOM.render(<Application />, document.getElementById("app"));
-  
+ReactDOM.render(<Application />, document.getElementById("app"));

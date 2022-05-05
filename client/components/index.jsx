@@ -1,165 +1,161 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import '../css/reset.css';
-import { fetchJSON, getCats } from './utils'
-import { useParams } from 'react-router-dom';
+import "../css/reset.css";
+import { fetchJSON, getCats } from "./utils";
+import { useParams } from "react-router-dom";
 
+const colorMain = "#6a59ca";
 
-const colorMain = '#6a59ca';
+export function Header({ account }) {
+  const acc = account && account.name ? account : false;
 
-
-export function Header({account}) {
-  const acc = account && account.name ? account : false
-  
   return (
-    <div style={{
-      width: '100%',
-      backgroundColor: colorMain,
-      color: '#e2e2e2',
-      height: '55px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: '.5rem 4rem'
-    }}>
-
-      <div style={{flexGrow: 1}} className="logo-container">
+    <div
+      style={{
+        width: "100%",
+        backgroundColor: colorMain,
+        color: "#e2e2e2",
+        height: "55px",
+        display: "flex",
+        justifyContent: "space-between",
+        padding: ".5rem 4rem",
+      }}
+    >
+      <div style={{ flexGrow: 1 }} className="logo-container">
         <h1>
-
           <a href="/">News App</a>
-        
-          {!acc ? '':<><button><a href="/add">Add</a></button><button><a href="/myarticles">My articles</a></button></>}
 
-          
+          {!acc ? (
+            ""
+          ) : (
+            <>
+              <button>
+                <a href="/add">Add</a>
+              </button>
+              <button>
+                <a href="/myarticles">My articles</a>
+              </button>
+            </>
+          )}
         </h1>
       </div>
 
-
-
-      <div>
-        {!acc ? <Link to="/login">Login</Link>:acc.name}
-        
-      </div>
-      
-
+      <div>{!acc ? <Link to="/login">Login</Link> : acc.name}</div>
     </div>
   );
 }
-
 
 export function Sidebar() {
   const [articles, setArticles] = useState([]);
   useEffect(async () => {
-    await fetch('/api/news').then(res => res.json().then(data => setArticles(data)));      
+    await fetch("/api/news").then((res) =>
+      res.json().then((data) => setArticles(data))
+    );
   }, []);
-  const cats = getCats()
+  const cats = getCats();
   return (
-    <div style={{
-      width: '30%',
-      backgroundColor: colorMain,
-      height: '100%',
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '.5rem 4rem',
-      float: 'left'
-    }}>  
-    
-
-
+    <div
+      style={{
+        width: "30%",
+        backgroundColor: colorMain,
+        height: "100%",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        padding: ".5rem 4rem",
+        float: "left",
+      }}
+    >
       <div className="topics-container">
         <div className="d-f">
-        {cats.map((cat, index) => (
-          <a href={`/topic/${cat}`} key={index}>
-            {cat}
-          </a>
-        ))}
+          {cats.map((cat, index) => (
+            <a href={`/topic/${cat}`} key={index}>
+              {cat}
+            </a>
+          ))}
         </div>
       </div>
 
-
-
       <div className="d-f articlessidebar-container">
-      {articles.length>0 && articles.map((article) => (
-          <a key={`${article._id}`} href={`/edit/${article._id}`}>{article.title}</a>
-      ))}
+        {articles.length > 0 &&
+          articles.map((article) => (
+            <a key={`${article._id}`} href={`/edit/${article._id}`}>
+              {article.title}
+            </a>
+          ))}
       </div>
-      
-
     </div>
   );
 }
 
-
 export function FrontPage() {
   const [articles, setArticles] = useState([]);
   useEffect(async () => {
-    await fetchJSON('/api/news').then(res => setArticles(res));      
-
+    await fetchJSON("/api/news").then((res) => setArticles(res));
   }, [articles]);
 
   return (
     <div className="main">
       <div className="d-f articlessidebar-container">
-      {articles.length>0 && articles.map((article) => (
-        <div key={`${article._id}`}>
-          <a href={`/edit/${article._id}`}>{article.title}</a>
-        </div>
-      ))}
-       
+        {articles.length > 0 &&
+          articles.map((article) => (
+            <div key={`${article._id}`}>
+              <a href={`/edit/${article._id}`}>{article.title}</a>
+            </div>
+          ))}
       </div>
     </div>
   );
 }
 
-
-
-export function SingleArticle () {
-  const [values, setValues] = useState({title: '', text: '', date: '', category: ''})
+export function SingleArticle() {
+  const [values, setValues] = useState({
+    title: "",
+    text: "",
+    date: "",
+    category: "",
+  });
   const { slug } = useParams();
 
   useEffect(async () => {
-    await fetch(`/api/news/${slug}`).then(res => res.json().then(data => setValues(data)));      
+    await fetch(`/api/news/${slug}`).then((res) =>
+      res.json().then((data) => setValues(data))
+    );
   }, []);
-  
+
   return (
-    <div style={{
-      width: '68%',
-      float: 'left',
-      margin: '2% 0 0 2%'
-    }}>
+    <div
+      style={{
+        width: "68%",
+        float: "left",
+        margin: "2% 0 0 2%",
+      }}
+    >
       <div className="d-f articlessidebar-container">
         <h1>{values.title}</h1>
         <span>Date {values.date}</span>
-        
+
         <div className="d-f">
-            <a href={`/topic/${values.category}`}>
-            {values.category}
-            </a>
-          </div>
-        
-        <p>
-          {values.text}
-        </p>
+          <a href={`/topic/${values.category}`}>{values.category}</a>
+        </div>
+
+        <p>{values.text}</p>
       </div>
     </div>
-  )
+  );
 }
 
-
-
-
-
-export function AddArticle ({account}) {
-  if(account.email == undefined) {
-    return <h1>Please Login</h1>
+export function AddArticle({ account }) {
+  if (account.email == undefined) {
+    return <h1>Please Login</h1>;
   }
   const navigate = useNavigate();
-  const [values, setValues] = useState({}) 
+  const [values, setValues] = useState({});
   const onChange = (e) => {
-    setValues({...values, [e.target.name]: e.target.value })
-  }
-  const cats = getCats()
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+  const cats = getCats();
   const onAddArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/add", {
@@ -167,27 +163,27 @@ export function AddArticle ({account}) {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({...values, author: account.email}),
+      body: JSON.stringify({ ...values, author: account.email }),
     });
     if (res.ok) {
-      toast.success('Your article added successfully');
-      navigate('/myarticles')
-
+      toast.success("Your article added successfully");
+      navigate("/myarticles");
     } else {
-      
-      toast.error(`Failed, ${res.status == 400 ? 'Title is used' : res.statusText}`);
+      toast.error(
+        `Failed, ${res.status == 400 ? "Title is used" : res.statusText}`
+      );
     }
-  }
+  };
   return (
     <form onSubmit={onAddArticle}>
       <div>
         <label>Title</label>
-        <input name="title" onChange={onChange} required/>
+        <input name="title" onChange={onChange} required />
       </div>
 
       <div>
         <label>Text</label>
-        <textarea name="text" onChange={onChange} cols="30" rows="4" required/>
+        <textarea name="text" onChange={onChange} cols="30" rows="4" required />
       </div>
 
       <div>
@@ -195,9 +191,10 @@ export function AddArticle ({account}) {
         <select name="category" onChange={onChange} required>
           <option value="">--choose--</option>
           {cats.map((cat, index) => (
-            <option value={cat} key={index}>{cat}</option>
+            <option value={cat} key={index}>
+              {cat}
+            </option>
           ))}
-          
         </select>
       </div>
 
@@ -205,26 +202,27 @@ export function AddArticle ({account}) {
         <input type="submit" value="Add" />
       </div>
     </form>
-  )
+  );
 }
 
-
-export function EditArticle({account}) {
-  if(account.email == undefined) {
-    return <h1>Please Login</h1>
+export function EditArticle({ account }) {
+  if (account.email == undefined) {
+    return <h1>Please Login</h1>;
   }
-  const [values, setValues] = useState({title: '', text: '', category: ''})
+  const [values, setValues] = useState({ title: "", text: "", category: "" });
   const { slug } = useParams();
 
   useEffect(async () => {
-    await fetch(`/api/news/${slug}`).then(res => res.json().then(data => setValues(data)));      
+    await fetch(`/api/news/${slug}`).then((res) =>
+      res.json().then((data) => setValues(data))
+    );
   }, []);
   const navigate = useNavigate();
-  
+
   const onChange = (e) => {
-    setValues({...values, [e.target.name]: e.target.value })
-  }
-  const cats = getCats()
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+  const cats = getCats();
   const onEditArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/save", {
@@ -232,35 +230,49 @@ export function EditArticle({account}) {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({...values, account: account.email}),
+      body: JSON.stringify({ ...values, account: account.email }),
     });
     if (res.ok) {
-      toast.success('Your article added successfully');
-      navigate('/myarticles')
-
+      toast.success("Your article added successfully");
+      navigate("/myarticles");
     } else {
-      toast.error(`Failed, ${res.status == 400 ? 'Title is used' : res.statusText}`);
+      toast.error(
+        `Failed, ${res.status == 400 ? "Title is used" : res.statusText}`
+      );
     }
-
-  }
+  };
   return (
     <form onSubmit={onEditArticle}>
       <div>
         <label>Title</label>
-        <input name="title" onChange={onChange} value={values.title} required/>
+        <input name="title" onChange={onChange} value={values.title} required />
       </div>
 
       <div>
         <label>Text</label>
-        <textarea name="text" onChange={onChange} cols="30" rows="4" required defaultValue={values.text} />
+        <textarea
+          name="text"
+          onChange={onChange}
+          cols="30"
+          rows="4"
+          required
+          defaultValue={values.text}
+        />
       </div>
 
       <div>
         <label>Category</label>
-        <select name="category" onChange={onChange} value={values.category} required>
+        <select
+          name="category"
+          onChange={onChange}
+          value={values.category}
+          required
+        >
           <option value="">--choose--</option>
           {cats.map((cat, index) => (
-            <option value={cat} key={index}>{cat}</option>
+            <option value={cat} key={index}>
+              {cat}
+            </option>
           ))}
         </select>
       </div>
@@ -269,55 +281,58 @@ export function EditArticle({account}) {
         <input type="submit" value="Save" />
       </div>
     </form>
-  )
+  );
 }
 
-
-export function MyArticles ({account}) {
+export function MyArticles({ account }) {
   const [articles, setArticles] = useState([]);
   useEffect(async () => {
-    if(account.email!=undefined&&articles.length<=0) {
-      await fetch('/api/news/?author='+account.email).then(res => res.json()).then(res => setArticles(res));      
+    if (account.email != undefined && articles.length <= 0) {
+      await fetch("/api/news/?author=" + account.email)
+        .then((res) => res.json())
+        .then((res) => setArticles(res));
     }
-    
   }, [account]);
 
-  if(account.email==undefined) { return <p>Please login</p> }
+  if (account.email == undefined) {
+    return <p>Please login</p>;
+  }
   return (
     <div className="main">
       <h1>My Articles</h1>
-      {articles.length>0 && articles.map((article) => (
-        <div key={`${article._id}`}>
-          <a href={`/view/${article.slug}`}>{article.title}</a>
-          
-          <a href={`/edit/${article.slug}`}><button>Edit</button></a>
-        </div>
-      ))}
-    </div>
-  )
+      {articles.length > 0 &&
+        articles.map((article) => (
+          <div key={`${article._id}`}>
+            <a href={`/view/${article.slug}`}>{article.title}</a>
 
+            <a href={`/edit/${article.slug}`}>
+              <button>Edit</button>
+            </a>
+          </div>
+        ))}
+    </div>
+  );
 }
 
-
-
-export function SingleTopic () {
+export function SingleTopic() {
   const [articles, setArticles] = useState([]);
   const { topic } = useParams();
 
   useEffect(async () => {
-      await fetch('/api/news/?topic='+topic).then(res => res.json()).then(res => setArticles(res));          
+    await fetch("/api/news/?topic=" + topic)
+      .then((res) => res.json())
+      .then((res) => setArticles(res));
   }, []);
 
   return (
     <div className="main">
       <h1>({topic}) Articles</h1>
-      {articles.length>0 && articles.map((article) => (
-        <div key={`${article._id}`}>
-          <a href={`/view/${article.slug}`}>{article.title}</a>
-          
-        </div>
-      ))}
+      {articles.length > 0 &&
+        articles.map((article) => (
+          <div key={`${article._id}`}>
+            <a href={`/view/${article.slug}`}>{article.title}</a>
+          </div>
+        ))}
     </div>
-  )
-
+  );
 }
