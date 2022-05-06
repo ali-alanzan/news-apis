@@ -22,7 +22,7 @@ import {
 import { fetchJSON, randomString, sha256, useLoader, getCats } from "./components/utils";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../css/reset.css";
+import "./css/reset.css";
 
 
 
