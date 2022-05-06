@@ -17,7 +17,7 @@ const app = express();
 const mongoClient = new MongoClient(process.env.MONGODB_URL);
 mongoClient.connect().then(async () => {
   console.log("Connected to mongodb");
-  app.use("/api/news", NewsApi(mongoClient.db("news")));
+  app.use("/api/news", NewsApi(mongoClient.db("test")));
 });
 
 app.use(bodyParser.json());
@@ -127,7 +127,7 @@ let news = [];
 wsServer.on("connection", (socket) => {
   sockets.push(socket);
   setTimeout(async () => {
-    news = await mongoClient.db("news")
+    news = await mongoClient.db("test")
     .collection("news")
     .find({})
     .sort({
@@ -148,7 +148,7 @@ wsServer.on("connection", (socket) => {
   socket.on("message", (data) => {
 
     setTimeout(async () => {
-      news = await mongoClient.db("news")
+      news = await mongoClient.db("test")
       .collection("news")
       .find({})
       .sort({
