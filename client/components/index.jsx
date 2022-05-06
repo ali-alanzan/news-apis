@@ -1,7 +1,7 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "../css/reset.css";
 import { fetchJSON, getCats } from "./utils";
 import { useParams } from "react-router-dom";
 
@@ -42,11 +42,11 @@ export function Header({ account }) {
       </div>
 
       <div>{!acc ? <div className="userarea">
-        <Link to="/login">Writer Login</Link> 
-        <Link to="/logingoogle"><span style={{color: 'yellow'}}>Join to Read by Google</span></Link> 
+        <a href="/login">Writer Login</a> 
+        <a href="/logingoogle" style={{color: 'yellow'}}>Join by Google</a> 
       </div> : <>
         {acc.name}
-        <Link to="/Logout"><span style={{margin: '0 10px', color: '#000'}}>Logout</span></Link>
+        <a href="/Logout" id="logout" style={{margin: '0 10px', color: '#000'}}>Logout</a>
       
       </>}</div>
     </div>
@@ -108,7 +108,7 @@ export function FrontPage({articles}) {
 }
 
 export function SingleArticle({account}) {
-  if(account.email == undefined) {
+  if(account == undefined || account.email == undefined) {
     return <h1>Please login by google to read the article</h1>
   }
   const [values, setValues] = useState({
@@ -148,7 +148,7 @@ export function SingleArticle({account}) {
 }
 
 export function AddArticle({ account, ws }) {
-  if (account.email == undefined || account.google != undefined) {
+  if (account == undefined || account.email == undefined || account.google != undefined) {
     return <h1>Please Login</h1>;
   }
   const navigate = useNavigate();
@@ -208,7 +208,7 @@ export function AddArticle({ account, ws }) {
 }
 
 export function EditArticle({ account, ws }) {
-  if (account.email == undefined || account.google != undefined ) {
+  if (account == undefined || account.email == undefined || account.google != undefined ) {
     return <h1>Please Login</h1>;
   }
   const [values, setValues] = useState({ title: "", text: "", category: "" });
@@ -288,7 +288,7 @@ export function EditArticle({ account, ws }) {
 }
 
 export function MyArticles({ account }) {
-  if (account.email == undefined || account.google != undefined ) {
+  if (account == undefined || account.email == undefined || account.google != undefined ) {
     return <p>Please login</p>;
   }
   const [articles, setArticles] = useState([]);
