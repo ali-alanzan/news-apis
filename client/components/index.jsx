@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 
 const colorMain = "#ca5959";
 
-export function TopBar({ account }) {
+export function HeaderBar({ account }) {
   const acc = account && account.name ? account : false;
 
   return (
@@ -53,7 +53,7 @@ export function TopBar({ account }) {
   );
 }
 
-export function SidebarApplication({articles, cats}) {
+export function SidebarMain({articles, cats}) {
 
   return (
     <div
@@ -90,7 +90,7 @@ export function SidebarApplication({articles, cats}) {
   );
 }
 
-export function MainPage({articles}) {
+export function HomePage({articles}) {
   
 
   return (
@@ -107,7 +107,7 @@ export function MainPage({articles}) {
   );
 }
 
-export function ArticleSingle({account}) {
+export function ArticleView({account}) {
   if(account == undefined || account.email == undefined) {
     return <h1>Please login by google to read the article</h1>
   }
@@ -147,7 +147,7 @@ export function ArticleSingle({account}) {
   );
 }
 
-export function AddNewArticle({ account, ws }) {
+export function NewArticle({ account, ws }) {
   if (account == undefined || account.email == undefined || account.google != undefined) {
     return <h1>Please Login</h1>;
   }
@@ -157,7 +157,7 @@ export function AddNewArticle({ account, ws }) {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
   const cats = getCats();
-  const onAddNewArticle = async (e) => {
+  const onNewArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/add", {
       method: "POST",
@@ -177,7 +177,7 @@ export function AddNewArticle({ account, ws }) {
     }
   };
   return (
-    <form onSubmit={onAddNewArticle}>
+    <form onSubmit={onNewArticle}>
       <div>
         <label>Title</label>
         <input name="title" onChange={onChange} required />
@@ -287,7 +287,7 @@ export function EditArticle({ account, ws }) {
   );
 }
 
-export function AuthorArticles({ account }) {
+export function WriterArticles({ account }) {
   if (account == undefined || account.email == undefined || account.google != undefined ) {
     return <p>Please login</p>;
   }

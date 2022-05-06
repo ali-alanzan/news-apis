@@ -9,14 +9,14 @@ import {
 } from "react-router-dom";
 
 import {
-  TopBar,
-  MainPage,
-  SidebarApplication,
-  ArticleSingle,
-  AddNewArticle,
-  AuthorArticles,
+  HeaderBar,
+  HomePage,
+  SidebarMain,
+  ArticleView,
+  NewArticle,
+  WriterArticles,
   EditArticle,
-  TopicArticles,
+  SingleCategory,
 } from "./components";
 
 import { fetchJSON, randomString, sha256, useLoader, getCats } from "./components/utils";
@@ -270,17 +270,17 @@ function Application() {
     <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
       <ToastContainer position="top-center" />
       <BrowserRouter>
-        <TopBar account={account} />
-        <SidebarApplication articles={articles} cats={cats} />
+        <HeaderBar account={account} />
+        <SidebarMain articles={articles} cats={cats} />
 
         <Routes>
-          <Route path={"/"} element={<MainPage articles={articles} />} />
-          <Route path={"/add"} element={<AddNewArticle account={account} ws={ws} />} />
+          <Route path={"/"} element={<HomePage articles={articles} />} />
+          <Route path={"/add"} element={<NewArticle account={account} ws={ws} />} />
           <Route
             path={"/myarticles"}
-            element={<AuthorArticles account={account} />}
+            element={<WriterArticles account={account} />}
           />
-          <Route path={"/view/:slug"} element={<ArticleSingle account={account} />} />
+          <Route path={"/view/:slug"} element={<ArticleView account={account} />} />
           <Route
             path={"/edit/:slug"}
             element={<EditArticle account={account} ws={ws} />}
@@ -294,7 +294,7 @@ function Application() {
           <Route path={"/login/callback"} element={<LoginCallback />} />
           <Route path={"/login/callback/google"} element={<LoginGoogleCallback />} />
           
-          <Route path={"/topic/:topic"} element={<TopicArticles />} />
+          <Route path={"/topic/:topic"} element={<SingleCategory />} />
         </Routes>
       </BrowserRouter>
     </LoginContext.Provider>

@@ -9,6 +9,8 @@ body {
 
 .logo-container h1 {
   float: left;
+  border-radius: 50px;
+  padding: 10px 20px;
   border: 3px solid #160e42;
 }
 
@@ -30,9 +32,9 @@ body {
 }
 
 .topics-container .d-f a {
-  width: 100%;
-  padding: 20px 20px 0 0;
-  margin: 5px auto;
+  border: 1px solid #160e42;
+  padding: 20px;
+  margin: 15px auto;
   border-radius: 50px;
   color: #e2e2e2;
 }
@@ -49,7 +51,7 @@ body {
 .articlessidebar-container a {
   color: #160e42;
   margin: 10px auto;
-  width: 100%;
+  width: 30%;
   text-align: left;
 }
 
@@ -84,7 +86,9 @@ button {
 .main .articlessidebar-container > div {
   display: block;
   margin: 10px auto;
-  width: 40%;
+  width: 60%;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #160e42;
   float: left;
 }
 

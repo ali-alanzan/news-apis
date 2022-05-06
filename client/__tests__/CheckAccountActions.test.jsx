@@ -2,19 +2,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { act } from "react-dom/test-utils";
-import { TopBar,  } from "../components";
+import { HeaderBar,  } from "../components";
 
 const origin =  window.location.origin;
 const readerAccount = {email: 'email@email.em', name:'John', google: true}
 const writerAccount = {email: 'email@email.em', name:'John'}
-describe("Account Action in TopBar", () => {
+describe("Account Action in HeaderBar", () => {
 
 
     it("shows Login buttons(Google, Azure)", async () => {
 
         const domElement = document.createElement("div");
         await act(async () => {
-          ReactDOM.render(<TopBar />, domElement);
+          ReactDOM.render(<HeaderBar />, domElement);
         });
         expect(
             Array.from(domElement.querySelectorAll("a")).map((e) => e.innerHTML)
@@ -33,7 +33,7 @@ describe("Account Action in TopBar", () => {
 
         const domElement = document.createElement("div");
         await act(async () => {
-          ReactDOM.render(<TopBar account={readerAccount} />, domElement);
+          ReactDOM.render(<HeaderBar account={readerAccount} />, domElement);
         });
 
         expect(domElement.querySelector("#logout").innerHTML).toEqual(
@@ -48,11 +48,11 @@ describe("Account Action in TopBar", () => {
     });  
 
 
-    it("shows ADD And AuthorArticles And Logout Buttons for writer", async () => {
+    it("shows ADD And WriterArticles And Logout Buttons for writer", async () => {
 
         const domElement = document.createElement("div");
         await act(async () => {
-          ReactDOM.render(<TopBar account={writerAccount} />, domElement);
+          ReactDOM.render(<HeaderBar account={writerAccount} />, domElement);
         });
         expect(
             Array.from(domElement.querySelectorAll("div a")).map((e) => e.innerHTML)

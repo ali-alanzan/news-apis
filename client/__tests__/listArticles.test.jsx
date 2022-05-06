@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { act } from "react-dom/test-utils";
-import { ArticleSingle, MainPage, SidebarApplication,  } from "../components";
+import { ArticleView, HomePage, SidebarMain,  } from "../components";
 
 const origin =  window.location.origin;
 const readerAccount = {email: 'email@email.em', name:'John', google: true}
@@ -10,7 +10,7 @@ const writerAccount = {email: 'email@email.em', name:'John'}
 describe("List Articles", () => {
     // it("shows loading screen", () => {
     //     const domElement = document.createElement("div");
-    //     ReactDOM.render(<MainPage />, domElement);
+    //     ReactDOM.render(<HomePage />, domElement);
     //     expect(domElement.innerHTML).toMatchSnapshot();
     // });
 
@@ -18,7 +18,7 @@ describe("List Articles", () => {
         const articles = [{ title: "article 1", slug: "article-1", _id: 1 }, { title: "article 2", slug: "article-2", _id: 2 }];
         const domElement = document.createElement("div");
         await act(async () => {
-          ReactDOM.render(<MainPage articles={articles} />, domElement);
+          ReactDOM.render(<HomePage articles={articles} />, domElement);
         });
         expect(
             Array.from(domElement.querySelectorAll("a")).map((e) => e.innerHTML)
@@ -29,12 +29,12 @@ describe("List Articles", () => {
         expect(domElement.innerHTML).toMatchSnapshot();
       });
 
-      it("shows articles and topics in SidebarApplication", async () => {
+      it("shows articles and topics in SidebarMain", async () => {
         const articles = [{ title: "article 1", slug: "article-1", _id: 1 }, { title: "article 2", slug: "article-2", _id: 2 }];
         const cats = ["Life", "Health"];
         const domElement = document.createElement("div");
         await act(async () => {
-          ReactDOM.render(<SidebarApplication articles={articles} cats={cats} />, domElement);
+          ReactDOM.render(<SidebarMain articles={articles} cats={cats} />, domElement);
         });
         expect(
             Array.from(domElement.querySelectorAll(".articlessidebar-container a")).map((e) => e.innerHTML)
@@ -57,7 +57,7 @@ describe("List Articles", () => {
         const domElement = document.createElement("div");
         await act(async () => {
           ReactDOM.render(
-            <ArticleSingle
+            <ArticleView
              
             />,
             domElement
