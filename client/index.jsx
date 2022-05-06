@@ -9,14 +9,14 @@ import {
 } from "react-router-dom";
 
 import {
-  Header,
-  FrontPage,
-  Sidebar,
-  SingleArticle,
-  AddArticle,
-  MyArticles,
+  TopBar,
+  MainPage,
+  SidebarApplication,
+  ArticleSingle,
+  AddNewArticle,
+  AuthorArticles,
   EditArticle,
-  SingleTopic,
+  TopicArticles,
 } from "./components";
 
 import { fetchJSON, randomString, sha256, useLoader, getCats } from "./components/utils";
@@ -270,17 +270,17 @@ function Application() {
     <LoginContext.Provider value={{ discovery_endpoint, client_id, scope }}>
       <ToastContainer position="top-center" />
       <BrowserRouter>
-        <Header account={account} />
-        <Sidebar articles={articles} cats={cats} />
+        <TopBar account={account} />
+        <SidebarApplication articles={articles} cats={cats} />
 
         <Routes>
-          <Route path={"/"} element={<FrontPage articles={articles} />} />
-          <Route path={"/add"} element={<AddArticle account={account} ws={ws} />} />
+          <Route path={"/"} element={<MainPage articles={articles} />} />
+          <Route path={"/add"} element={<AddNewArticle account={account} ws={ws} />} />
           <Route
             path={"/myarticles"}
-            element={<MyArticles account={account} />}
+            element={<AuthorArticles account={account} />}
           />
-          <Route path={"/view/:slug"} element={<SingleArticle account={account} />} />
+          <Route path={"/view/:slug"} element={<ArticleSingle account={account} />} />
           <Route
             path={"/edit/:slug"}
             element={<EditArticle account={account} ws={ws} />}
@@ -294,7 +294,7 @@ function Application() {
           <Route path={"/login/callback"} element={<LoginCallback />} />
           <Route path={"/login/callback/google"} element={<LoginGoogleCallback />} />
           
-          <Route path={"/topic/:topic"} element={<SingleTopic />} />
+          <Route path={"/topic/:topic"} element={<TopicArticles />} />
         </Routes>
       </BrowserRouter>
     </LoginContext.Provider>

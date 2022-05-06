@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`List Articles ADD article show error when no user logged in 1`] = `"<h1>Please Login</h1>"`;
-
-exports[`List Articles Edit article show error when no user logged in 1`] = `"<h1>Please Login</h1>"`;
-
-exports[`List Articles List articles to Edit show error when no user logged in 1`] = `"<h1>Please Login</h1>"`;

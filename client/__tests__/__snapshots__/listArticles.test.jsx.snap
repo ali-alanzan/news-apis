@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`List Articles show error to not logged in user in article 1`] = `"<h1>Please login by google to read the article</h1>"`;
-
-exports[`List Articles shows articles 1`] = `"<div class=\\"main\\"><div class=\\"d-f articlessidebar-container\\"><div><a href=\\"/view/article-1\\">article 1</a></div><div><a href=\\"/view/article-2\\">article 2</a></div></div></div>"`;
-
-exports[`List Articles shows articles and topics in Sidebar 1`] = `"<div style=\\"width: 30%; background-color: rgb(106, 89, 202); height: 100%; min-height: 100vh; display: flex; flex-direction: column; padding: .5rem 4rem; float: left;\\"><div class=\\"topics-container\\"><div class=\\"d-f\\"><a href=\\"/topic/Life\\">Life</a><a href=\\"/topic/Health\\">Health</a></div></div><div class=\\"d-f articlessidebar-container\\"><a href=\\"/view/article-1\\">article 1</a><a href=\\"/view/article-2\\">article 2</a></div></div>"`;

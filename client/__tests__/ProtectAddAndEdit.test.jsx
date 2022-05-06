@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { act } from "react-dom/test-utils";
-import { AddArticle, EditArticle } from "../components";
+import { AddNewArticle, EditArticle } from "../components";
 
 const origin =  window.location.origin;
 const readerAccount = {email: 'email@email.em', name:'John', google: true}
@@ -13,7 +13,7 @@ describe("List Articles", () => {
         const domElement = document.createElement("div");
         await act(async () => {
           ReactDOM.render(
-            <AddArticle
+            <AddNewArticle
              
             />,
             domElement

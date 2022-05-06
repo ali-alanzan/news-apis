@@ -9,6 +9,7 @@ body {
 
 .logo-container h1 {
   float: left;
+  border: 3px solid #160e42;
 }
 
 .d-f {
@@ -29,6 +30,7 @@ body {
 }
 
 .topics-container .d-f a {
+  width: 100%;
   padding: 20px 20px 0 0;
   margin: 5px auto;
   border-radius: 50px;
@@ -79,10 +81,15 @@ button {
   margin: 2% 0 0 2%;
 }
 
-.main div {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+.main .articlessidebar-container > div {
+  display: block;
+  margin: 10px auto;
+  width: 40%;
+  float: left;
+}
+
+.main > div {
+  display: block;
   max-width: 50%;
   clear: both;
   -ms-flex-pack: distribute;

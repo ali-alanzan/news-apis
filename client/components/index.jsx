@@ -5,9 +5,9 @@ import { toast } from "react-toastify";
 import { fetchJSON, getCats } from "./utils";
 import { useParams } from "react-router-dom";
 
-const colorMain = "#6a59ca";
+const colorMain = "#ca5959";
 
-export function Header({ account }) {
+export function TopBar({ account }) {
   const acc = account && account.name ? account : false;
 
   return (
@@ -24,7 +24,7 @@ export function Header({ account }) {
     >
       <div style={{ flexGrow: 1 }} className="logo-container">
         <h1>
-          <a href="/">News App</a>
+          <a href="/">News Blog</a>
 
           {!acc || acc.google != undefined ? (
             ""
@@ -42,8 +42,8 @@ export function Header({ account }) {
       </div>
 
       <div>{!acc ? <div className="userarea">
-        <a href="/login">Writer Login</a> 
-        <a href="/logingoogle" style={{color: 'yellow'}}>Join by Google</a> 
+        <a href="/login">Login as author</a> 
+        <a href="/logingoogle" style={{color: 'yellow'}}>Join to reader</a> 
       </div> : <>
         {acc.name}
         <a href="/Logout" id="logout" style={{margin: '0 10px', color: '#000'}}>Logout</a>
@@ -53,7 +53,7 @@ export function Header({ account }) {
   );
 }
 
-export function Sidebar({articles, cats}) {
+export function SidebarApplication({articles, cats}) {
 
   return (
     <div
@@ -90,7 +90,7 @@ export function Sidebar({articles, cats}) {
   );
 }
 
-export function FrontPage({articles}) {
+export function MainPage({articles}) {
   
 
   return (
@@ -107,7 +107,7 @@ export function FrontPage({articles}) {
   );
 }
 
-export function SingleArticle({account}) {
+export function ArticleSingle({account}) {
   if(account == undefined || account.email == undefined) {
     return <h1>Please login by google to read the article</h1>
   }
@@ -147,7 +147,7 @@ export function SingleArticle({account}) {
   );
 }
 
-export function AddArticle({ account, ws }) {
+export function AddNewArticle({ account, ws }) {
   if (account == undefined || account.email == undefined || account.google != undefined) {
     return <h1>Please Login</h1>;
   }
@@ -157,7 +157,7 @@ export function AddArticle({ account, ws }) {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
   const cats = getCats();
-  const onAddArticle = async (e) => {
+  const onAddNewArticle = async (e) => {
     e.preventDefault();
     const res = await fetch("/api/news/add", {
       method: "POST",
@@ -177,7 +177,7 @@ export function AddArticle({ account, ws }) {
     }
   };
   return (
-    <form onSubmit={onAddArticle}>
+    <form onSubmit={onAddNewArticle}>
       <div>
         <label>Title</label>
         <input name="title" onChange={onChange} required />
@@ -287,7 +287,7 @@ export function EditArticle({ account, ws }) {
   );
 }
 
-export function MyArticles({ account }) {
+export function AuthorArticles({ account }) {
   if (account == undefined || account.email == undefined || account.google != undefined ) {
     return <p>Please login</p>;
   }
@@ -318,7 +318,7 @@ export function MyArticles({ account }) {
   );
 }
 
-export function SingleTopic() {
+export function TopicArticles() {
   const [articles, setArticles] = useState([]);
   const { topic } = useParams();
 

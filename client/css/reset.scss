@@ -12,6 +12,7 @@ body {
 .logo-container {
   h1 {
     float: left;
+    border: 3px solid #160e42;
   }
 }
 
@@ -25,6 +26,7 @@ body {
     justify-content: space-around;
   }
   .d-f a {
+    width: 100%;
     padding: 20px 20px 0 0;
     margin: 5px auto;
     border-radius: 50px;
@@ -67,8 +69,16 @@ button {
   width: 68%;
   float: left;
   margin: 2% 0 0 2%;
-  div {
-    display: flex;
+  .articlessidebar-container {
+    & > div {
+      display: block;
+      margin: 10px auto;
+      width: 40%;
+      float: left;
+    }
+  }
+  & > div {
+    display: block;
     max-width: 50%;
     clear: both;
     justify-content: space-around;
