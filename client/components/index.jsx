@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { fetchJSON, getCats } from "./utils";
 import { useParams } from "react-router-dom";
 
-const colorMain = "#ca5959";
+const colorMain = "#a459ca";
 
 export function TopBar({ account }) {
   const acc = account && account.name ? account : false;
