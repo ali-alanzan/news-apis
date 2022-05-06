@@ -26,7 +26,7 @@ export function Header({ account }) {
         <h1>
           <a href="/">News App</a>
 
-          {!acc ? (
+          {!acc || acc.google != undefined ? (
             ""
           ) : (
             <>
@@ -41,7 +41,14 @@ export function Header({ account }) {
         </h1>
       </div>
 
-      <div>{!acc ? <Link to="/login">Login</Link> : acc.name}</div>
+      <div>{!acc ? <div className="userarea">
+        <Link to="/login">Writer Login</Link> 
+        <Link to="/logingoogle"><span style={{color: 'yellow'}}>Join to Read by Google</span></Link> 
+      </div> : <>
+        {acc.name}
+        <Link to="/Logout"><span style={{margin: '0 10px', color: '#000'}}>Logout</span></Link>
+      
+      </>}</div>
     </div>
   );
 }
@@ -100,7 +107,10 @@ export function FrontPage({articles}) {
   );
 }
 
-export function SingleArticle() {
+export function SingleArticle({account}) {
+  if(account.email == undefined) {
+    return <h1>Please login by google to read the article</h1>
+  }
   const [values, setValues] = useState({
     title: "",
     text: "",
@@ -138,7 +148,7 @@ export function SingleArticle() {
 }
 
 export function AddArticle({ account, ws }) {
-  if (account.email == undefined) {
+  if (account.email == undefined || account.google != undefined) {
     return <h1>Please Login</h1>;
   }
   const navigate = useNavigate();
@@ -197,8 +207,8 @@ export function AddArticle({ account, ws }) {
   );
 }
 
-export function EditArticle({ account }) {
-  if (account.email == undefined) {
+export function EditArticle({ account, ws }) {
+  if (account.email == undefined || account.google != undefined ) {
     return <h1>Please Login</h1>;
   }
   const [values, setValues] = useState({ title: "", text: "", category: "" });
@@ -225,7 +235,8 @@ export function EditArticle({ account }) {
       body: JSON.stringify({ ...values, account: account.email }),
     });
     if (res.ok) {
-      toast.success("Your article added successfully");
+      ws.send('{"message":"update"}')
+      toast.success("Your article updated");
       navigate("/myarticles");
     } else {
       toast.error(
@@ -277,6 +288,9 @@ export function EditArticle({ account }) {
 }
 
 export function MyArticles({ account }) {
+  if (account.email == undefined || account.google != undefined ) {
+    return <p>Please login</p>;
+  }
   const [articles, setArticles] = useState([]);
   useEffect(async () => {
     if (account.email != undefined && articles.length <= 0) {
@@ -286,9 +300,7 @@ export function MyArticles({ account }) {
     }
   }, [account]);
 
-  if (account.email == undefined) {
-    return <p>Please login</p>;
-  }
+
   return (
     <div className="main">
       <h1>My Articles</h1>

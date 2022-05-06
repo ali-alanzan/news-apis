@@ -144,6 +144,77 @@ function LoginCallback() {
   return <h1>Please wait...</h1>;
 }
 
+
+function LoginGoogle() {
+
+  async function handleStartLogin() {
+    // Get the location of endpoints from Google
+    const { authorization_endpoint } = await fetchJSON(
+      "https://accounts.google.com/.well-known/openid-configuration"
+    );
+
+    // Tell Google how to authentication
+    const query = new URLSearchParams({
+      response_type: "token",
+      scope: "openid profile email",
+      client_id: process.env.CLIENT_GOOGLE_ID,
+      // Tell user to come back to http://localhost:3000/callback when logged in
+      redirect_uri: window.location.origin + "/login/callback/google",
+    });
+    // Redirect the browser to log in
+    window.location.href = authorization_endpoint + "?" + query;
+  }
+
+  return (
+    <div style={{display: 'table', margin: '4rem auto'}}>
+      <button style={{padding: '10px 20px', fontSize: '1.2rem'}} onClick={handleStartLogin}>Google Login</button>
+    </div>
+  );
+}
+
+
+// Router should take user here on /callback
+function LoginGoogleCallback() {
+  const navigate = useNavigate();
+  useEffect(async () => {
+    const { access_token } = Object.fromEntries(
+      new URLSearchParams(window.location.hash.substring(1))
+    );
+    console.log(access_token);
+
+    await fetch("/api/logingoogle", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ access_token }),
+    });
+    navigate("/");
+  });
+  return <div>Completing loging...</div>;
+}
+
+
+function Logout({account}) {
+  const navigate = useNavigate();
+  useEffect(async () => {
+
+
+    await fetch("/api/logout", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ account }),
+    });
+    document.cookie = "cookiename=access_token; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.replace(window.location.origin)
+  });
+  return <h1>Please wait</h1>
+  
+}
+
+
 function Application() {
   const { data, loading, error } = useLoader(() => fetchJSON("/api/config"));
   const [articles, setArticles] = useState([]);
@@ -153,8 +224,20 @@ function Application() {
     const data = await fetchJSON("/api/login");
     return data;
   };
+  const dataGoogleAccount = async () => {
+    const data = await fetchJSON("/api/logingoogle");
+    return data;
+  };
   useEffect(() => {
-    dataAccount().then((data) => setAccount(data));
+    dataAccount().then((data) => {
+      console.log(data)
+      setAccount({...data})
+      if(data.email == undefined) {
+        dataGoogleAccount().then((data) => setAccount({...data, google: true})).catch((err) => {
+          console.log(err)
+        });
+      }
+    });
     const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
 
     ws.onmessage = (event) => {
@@ -164,6 +247,7 @@ function Application() {
     };
     setWs(ws);
   }, []);
+  console.log(account);
   if (loading) {
     return <div>Please wait...</div>;
   }
@@ -195,13 +279,20 @@ function Application() {
             path={"/myarticles"}
             element={<MyArticles account={account} />}
           />
-          <Route path={"/view/:slug"} element={<SingleArticle />} />
+          <Route path={"/view/:slug"} element={<SingleArticle account={account} />} />
           <Route
             path={"/edit/:slug"}
-            element={<EditArticle account={account} />}
+            element={<EditArticle account={account} ws={ws} />}
           />
+          <Route path={"/logout"} element={<Logout account={account} />} />
+
+          <Route path={"/logingoogle"} element={<LoginGoogle />} />
+
           <Route path={"/login"} element={<Login />} />
+          
           <Route path={"/login/callback"} element={<LoginCallback />} />
+          <Route path={"/login/callback/google"} element={<LoginGoogleCallback />} />
+          
           <Route path={"/topic/:topic"} element={<SingleTopic />} />
         </Routes>
       </BrowserRouter>

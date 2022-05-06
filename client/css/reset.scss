@@ -75,3 +75,9 @@ button {
     margin: 30px 0;
   }
 }
+
+.userarea {
+  & > a {
+    margin: 0 10px;
+  }
+}

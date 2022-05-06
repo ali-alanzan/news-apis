@@ -62,6 +62,53 @@ app.post("/api/login", (req, res) => {
   res.sendStatus(200);
 });
 
+
+app.get("/api/logingoogle", async (req, res) => {
+  const { access_token } = req.signedCookies;
+
+  const { userinfo_endpoint } = await fetchJSON(
+    "https://accounts.google.com/.well-known/openid-configuration"
+  );
+  const userinfo = await fetchJSON(userinfo_endpoint, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  res.json(userinfo);
+});
+
+app.post("/api/logingoogle", (req, res) => {
+  const { access_token } = req.body;
+  res.cookie("access_token", access_token, { signed: true });
+  res.sendStatus(200);
+});
+
+
+
+
+// LOgout
+app.post("/api/logout", async (req, res) => {
+
+
+
+  const { account } = req.body;
+  if(account.google != undefined) {
+
+    const logout = await fetchJSON('https://www.google.com/accounts/Logout');
+  
+  } else {
+    const logout = await fetchJSON('https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=http://localhost:3000/');
+
+  }
+  res.cookie("access_token", null, { signed: false });
+  res.sendStatus(200);
+});
+
+
+
+
+
 app.use(express.static("../client/dist"));
 app.use((req, res, next) => {
   if (req.method === "GET" && !req.path.startsWith("/api")) {
@@ -79,7 +126,6 @@ let news = [];
 
 wsServer.on("connection", (socket) => {
   sockets.push(socket);
-  console.log('connectoin socket server')
   setTimeout(async () => {
     news = await mongoClient.db("news")
     .collection("news")
