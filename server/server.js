@@ -69,6 +69,7 @@ app.get("/api/logingoogle", async (req, res) => {
   const { userinfo_endpoint } = await fetchJSON(
     "https://accounts.google.com/.well-known/openid-configuration"
   );
+  console.log(userinfo_endpoint, access_token);
   const userinfo = await fetchJSON(userinfo_endpoint, {
     headers: {
       Authorization: `Bearer ${access_token}`,
